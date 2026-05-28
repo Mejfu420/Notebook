@@ -1,0 +1,67 @@
+# dependencies
+node_modules/
+.pnp
+.pnp.*
+.yarn/*
+!.yarn/patches
+!.yarn/plugins
+!.yarn/releases
+!.yarn/versions
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+.pnpm-debug.log*
+
+# testing
+coverage/
+.nyc_output/
+.jest/
+
+# next.js (poprawione pod monorepo)
+.next/
+out/
+
+# production & build outputs (poprawione pod monorepo)
+build/
+dist/
+
+# misc
+.DS_Store
+.DS_Store?
+._*
+Thumbs.db
+desktop.ini
+*.pem
+*.key
+*.cert
+.vercel
+
+# debug
+*.log
+logs/
+*.pid
+*.seed
+*.pid.lock
+
+# env files
+.env*
+*.env.*
+
+# typescript
+*.tsbuildinfo
+next-env.d.ts
+
+# ides
+.vscode/
+!.vscode/extensions.json
+.idea/
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
+
+# local databases
+postgres-data/
+pgdata/
+.docker/
