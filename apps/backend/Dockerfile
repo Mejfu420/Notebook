@@ -6,7 +6,7 @@ COPY apps/backend/ ./apps/backend/
 COPY apps/database/ ./apps/database/
 COPY shared/ ./shared/
 
-RUN npm ci
+RUN npm install
 
 RUN npm run build --workspace=backend
 
