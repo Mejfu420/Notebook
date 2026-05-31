@@ -2,7 +2,7 @@ apiVersion: v1
 kind: ConfigMap
 metadata:
   name: app-config
-  namespace: secure-notes-apps
+  namespace: red-notes
 data:
   NODE_ENV: "production"
   PORT: "8080"

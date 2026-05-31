@@ -2,7 +2,7 @@ apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
   name: app-ingress
-  namespace: secure-notes-apps
+  namespace: red-notes
   annotations:
     nginx.ingress.kubernetes.io/rewrite-target: /
 spec:

@@ -2,7 +2,7 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: worker-deployment
-  namespace: secure-notes-apps
+  namespace: red-notes
 spec:
   replicas: 1
   selector:
