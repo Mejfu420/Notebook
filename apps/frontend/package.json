@@ -2,6 +2,7 @@
   "name": "rednotes",
   "version": "0.1.0",
   "private": true,
+  "author": "Mejfu420",
   "scripts": {
     "dev": "next dev",
     "build": "next build",

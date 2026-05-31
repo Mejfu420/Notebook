@@ -1,0 +1,9 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: app-config
+  namespace: secure-notes-apps
+data:
+  NODE_ENV: "production"
+  PORT: "8080"
+  NEXT_PUBLIC_API_URL: "http://secure-notes.local/api"

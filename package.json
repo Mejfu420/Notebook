@@ -1,0 +1,11 @@
+{
+    "name": "secure-notes-monorepo",
+    "private": true,
+    "workspaces": [
+        "apps/*",
+        "shared"
+    ],
+    "devDependencies": {
+        "typescript": "^5.0.0"
+    }
+}
