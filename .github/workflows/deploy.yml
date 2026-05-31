@@ -19,7 +19,7 @@ jobs:
           cache: "npm"
       - name: Update npm to latest
         run: npm install -g npm@latest
-      - run: npm ci
+      - run: npm install
       - run: |
           cd apps/backend
           npm run test:ci
