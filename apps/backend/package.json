@@ -14,7 +14,7 @@
   "license": "ISC",
   "type": "commonjs",
   "dependencies": {
-    "@red-notes/shared": "workspace:*",
+    "@red-notes/shared": "file:../../shared",
     "@clerk/express": "^2.1.22",
     "@prisma/adapter-pg": "^7.8.0",
     "cors": "^2.8.6",
