@@ -51,11 +51,12 @@ spec:
           volumeMounts:
             - name: postgres-persistent-storage
               mountPath: /var/lib/postgresql/data
+              subPath: pgdata
   volumeClaimTemplates:
     - metadata:
         name: postgres-persistent-storage
       spec:
-        accessModes: [ "ReadWriteOnce" ]
+        accessModes: ["ReadWriteOnce"]
         resources:
           requests:
             storage: 2Gi
