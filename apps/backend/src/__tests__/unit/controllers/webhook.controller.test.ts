@@ -1,0 +1,109 @@
+/// <reference types="jest" />
+import { clerkWebhookHandler } from '../../../controllers/webhook.controller';
+import { prisma } from '../../../libs/prisma';
+
+jest.mock('../../../libs/prisma', () => ({
+    prisma: {
+        user: {
+            create: jest.fn(),
+        },
+    },
+}));
+
+jest.mock('svix', () => {
+    return {
+        Webhook: jest.fn().mockImplementation(() => {
+            return {
+                verify: jest.fn((payload, headers) => {
+                    if (headers['svix-signature'] === 'invalid-signature') {
+                        throw new Error('Verification failed');
+                    }
+                    return JSON.parse(payload);
+                }),
+            };
+        }),
+    };
+});
+describe('Webhook Controller (Unit)', () => {
+    let req: any;
+    let res: any;
+    const originalEnv = process.env;
+
+    beforeEach(() => {
+        jest.clearAllMocks();
+        process.env = { ...originalEnv, CLERK_WEBHOOK_SECRET: 'whsec_secret123' };
+        req = {
+            headers: {
+                'svix-id': 'msg_123',
+                'svix-timestamp': '123456',
+                'svix-signature': 'valid-signature',
+            },
+            body: Buffer.from(JSON.stringify({ type: 'user.created', data: { id: 'user_1', email_addresses: [{ email_address: 'u@test.com' }] } })),
+        };
+        res = {
+            status: jest.fn().mockReturnThis(),
+            json: jest.fn().mockReturnThis(),
+        };
+    });
+
+    afterAll(() => {
+        process.env = originalEnv;
+    });
+
+    it('should return 500 if CLERK_WEBHOOK_SECRET is missing', async () => {
+        delete process.env.CLERK_WEBHOOK_SECRET;
+
+        await clerkWebhookHandler(req, res);
+
+        expect(res.status).toHaveBeenCalledWith(500);
+        expect(res.json).toHaveBeenCalledWith({ error: 'Missing CLERK_WEBHOOK_SECRET in .env file' });
+    });
+
+    it('should return 400 if svix headers are missing', async () => {
+        req.headers = {};
+
+        await clerkWebhookHandler(req, res);
+
+        expect(res.status).toHaveBeenCalledWith(400);
+        expect(res.json).toHaveBeenCalledWith({ error: 'Missing Svix headers' });
+    });
+
+    it('should return 400 if signature verification fails', async () => {
+        req.headers['svix-signature'] = 'invalid-signature';
+
+        await clerkWebhookHandler(req, res);
+
+        expect(res.status).toHaveBeenCalledWith(400);
+        expect(res.json).toHaveBeenCalledWith({ error: 'Verification failed' });
+    });
+
+    it('should create a user and return 201 on valid user.created event', async () => {
+        jest.mocked(prisma.user.create).mockResolvedValue({ id: 'user_1', email: 'u@test.com' } as any);
+
+        await clerkWebhookHandler(req, res);
+
+        expect(prisma.user.create).toHaveBeenCalledWith({
+            data: { id: 'user_1', email: 'u@test.com' },
+        });
+        expect(res.status).toHaveBeenCalledWith(201);
+        expect(res.json).toHaveBeenCalledWith({ success: true, message: 'User created in database' });
+    });
+
+    it('should return 500 if prisma user creation fails', async () => {
+        jest.mocked(prisma.user.create).mockRejectedValue(new Error('Prisma Error'));
+
+        await clerkWebhookHandler(req, res);
+
+        expect(res.status).toHaveBeenCalledWith(500);
+        expect(res.json).toHaveBeenCalledWith({ error: 'Error saving user to database' });
+    });
+
+    it('should return 200 received: true for unhandled event types', async () => {
+        req.body = Buffer.from(JSON.stringify({ type: 'user.updated', data: { id: 'user_1' } }));
+
+        await clerkWebhookHandler(req, res);
+
+        expect(res.status).toHaveBeenCalledWith(200);
+        expect(res.json).toHaveBeenCalledWith({ received: true });
+    });
+});
