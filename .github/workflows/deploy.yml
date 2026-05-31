@@ -64,7 +64,7 @@ jobs:
           kubeconfig: ${{ secrets.KUBECONFIG }}
       - name: Deploy to Kubernetes
         run: |
-          kubectl apply -k k8s/
+          kubectl apply -k k8s/ --insecure-skip-tls-verify=true
           IMAGE_TAG="sha-${{ github.sha }}"
           NAMESPACE="red-notes"
 
