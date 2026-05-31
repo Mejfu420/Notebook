@@ -1,17 +1,13 @@
-FROM node:20-alpine
+FROM node:22-alpine
 WORKDIR /app
 
-COPY package*.json ./
-COPY apps/backend/package*.json ./apps/backend/
-COPY apps/database/package*.json ./apps/database/
-
-RUN npm ci
-
+COPY package.json package-lock.json ./
 COPY apps/backend/ ./apps/backend/
 COPY apps/database/ ./apps/database/
 
-RUN npx prisma generate --schema=./apps/database/schema.prisma
-RUN npm run build --workspace=apps/backend
+RUN npm ci
+
+RUN npm run build --workspace=backend
 
 EXPOSE 8080
 

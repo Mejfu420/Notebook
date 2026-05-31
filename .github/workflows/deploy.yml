@@ -27,7 +27,7 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        component: [frontend, backend, worker]
+        component: [backend]
     steps:
       - uses: actions/checkout@v4
       - uses: docker/setup-buildx-action@v3
@@ -62,19 +62,12 @@ jobs:
           kubeconfig: ${{ secrets.KUBECONFIG }}
       - name: Deploy to Kubernetes
         run: |
-          # 1. Wdrożenie konfiguracji za pomocą kustomize
-          # Kustomize odczyta wszystkie pliki -deploy.yaml
           kubectl apply -k k8s/
-
           IMAGE_TAG="sha-${{ github.sha }}"
           NAMESPACE="red-notes"
 
-          # 2. Aktualizacja obrazów (używamy nazw z metadata.name czyli -deployment)
-          kubectl set image deployment/frontend-deployment frontend=${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}/frontend:${IMAGE_TAG} -n $NAMESPACE
+          # Aktualizacja obrazu backendu
           kubectl set image deployment/backend-deployment backend=${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}/backend:${IMAGE_TAG} -n $NAMESPACE
-          kubectl set image deployment/worker-deployment worker=${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}/worker:${IMAGE_TAG} -n $NAMESPACE
 
-          # 3. Statusy wdrożenia (oczekiwanie na start kontenerów)
+          # Sprawdzenie statusu
           kubectl rollout status deployment/backend-deployment -n $NAMESPACE --timeout=2m
-          kubectl rollout status deployment/frontend-deployment -n $NAMESPACE --timeout=2m
-          kubectl rollout status deployment/worker-deployment -n $NAMESPACE --timeout=2m
