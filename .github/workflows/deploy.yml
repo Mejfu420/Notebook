@@ -17,6 +17,8 @@ jobs:
         with:
           node-version: 22
           cache: "npm"
+      - name: Update npm to latest
+        run: npm install -g npm@latest
       - run: npm ci
       - run: |
           cd apps/backend
@@ -66,8 +68,6 @@ jobs:
           IMAGE_TAG="sha-${{ github.sha }}"
           NAMESPACE="red-notes"
 
-          # Aktualizacja obrazu backendu
           kubectl set image deployment/backend-deployment backend=${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}/backend:${IMAGE_TAG} -n $NAMESPACE
 
-          # Sprawdzenie statusu
           kubectl rollout status deployment/backend-deployment -n $NAMESPACE --timeout=2m
