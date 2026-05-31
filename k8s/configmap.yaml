@@ -6,4 +6,4 @@ metadata:
 data:
   NODE_ENV: "production"
   PORT: "8080"
-  NEXT_PUBLIC_API_URL: "http://secure-notes.local/api"
+  NEXT_PUBLIC_API_URL: "http://red-notes.local/api"

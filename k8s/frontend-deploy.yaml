@@ -27,7 +27,7 @@ spec:
     spec:
       containers:
         - name: frontend
-          image: IMAGE_PLACEHOLDER
+          image: ghcr.io/mejfu420/notebook/frontend:latest
           ports:
             - containerPort: 3000
           env:

@@ -13,7 +13,7 @@ spec:
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: backend-deploy
+  name: backend-deployment
   namespace: red-notes
 spec:
   replicas: 2
@@ -44,7 +44,7 @@ spec:
             ]
       containers:
         - name: backend
-          image: IMAGE_PLACEHOLDER
+          image: ghcr.io/mejfu420/notebook/backend:latest
           securityContext:
             allowPrivilegeEscalation: false
             capabilities:
@@ -89,5 +89,5 @@ spec:
             httpGet:
               path: /health
               port: 8080
-            initialDelaySeconds: 5
+            initialDelaySeconds: 15
             periodSeconds: 5

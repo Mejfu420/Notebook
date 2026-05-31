@@ -1,28 +1,18 @@
-FROM node:20-alpine AS builder
+FROM node:20-alpine
 WORKDIR /app
 
 COPY package*.json ./
 COPY apps/backend/package*.json ./apps/backend/
-COPY shared/ ./shared/
+COPY apps/database/package*.json ./apps/database/
 
 RUN npm ci
 
 COPY apps/backend/ ./apps/backend/
+COPY apps/database/ ./apps/database/
 
-WORKDIR /app/apps/backend
-RUN npm run build
-
-FROM node:20-alpine AS runner
-WORKDIR /app
-
-ENV NODE_ENV=production
-USER node
-
-COPY apps/backend/package*.json ./
-RUN npm ci --only=production
-
-COPY --from=builder /app/apps/backend/dist ./dist
+RUN npx prisma generate --schema=./apps/database/schema.prisma
+RUN npm run build --workspace=apps/backend
 
 EXPOSE 8080
 
-CMD ["node", "dist/index.js"]
+CMD npx prisma migrate deploy --schema=./apps/database/schema.prisma && node apps/backend/dist/index.js

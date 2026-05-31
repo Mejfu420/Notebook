@@ -1,5 +1,5 @@
 {
-    "name": "secure-notes-monorepo",
+    "name": "red-notes-monorepo",
     "private": true,
     "workspaces": [
         "apps/*",
