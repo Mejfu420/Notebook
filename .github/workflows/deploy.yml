@@ -7,10 +7,11 @@ on:
 permissions:
   contents: "read"
   id-token: "write"
+  packages: "write"
 
 env:
   REGISTRY: ghcr.io
-  IMAGE_NAME: ${{ github.repository }}
+  IMAGE_NAME: mejfu420/notebook
 
 jobs:
   test:
