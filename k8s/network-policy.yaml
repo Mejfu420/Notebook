@@ -1,21 +1,28 @@
 apiVersion: networking.k8s.io/v1
 kind: NetworkPolicy
 metadata:
-  name: app-network-policy
+  name: allow-frontend-to-backend
   namespace: red-notes
 spec:
-  podSelector: {}
-  policyTypes:
-    - Ingress
+  podSelector:
+    matchLabels:
+      app: backend
   ingress:
     - from:
         - podSelector:
             matchLabels:
               app: frontend
-      to:
-        - pods:
-            matchLabels:
-              app: backend
+---
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: allow-to-postgres
+  namespace: red-notes
+spec:
+  podSelector:
+    matchLabels:
+      app: postgres
+  ingress:
     - from:
         - podSelector:
             matchLabels:
@@ -23,10 +30,18 @@ spec:
         - podSelector:
             matchLabels:
               app: worker
-      to:
-        - pods:
+---
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: allow-to-redis
+  namespace: red-notes
+spec:
+  podSelector:
+    matchLabels:
+      app: redis
+  ingress:
+    - from:
+        - podSelector:
             matchLabels:
-              app: postgres
-        - pods:
-            matchLabels:
-              app: redis
+              app: backend

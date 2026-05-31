@@ -3,6 +3,7 @@ kind: Kustomization
 namespace: red-notes
 
 resources:
+  - network-policy.yaml
   - namespace.yaml
   - backend-deploy.yaml
   - frontend-deploy.yaml
@@ -11,6 +12,5 @@ resources:
   - redis-deploy.yaml
   - secrets.yaml
   - configmap.yaml
-  - network-policy.yaml
   - pdb.yaml
   - ingress.yaml
