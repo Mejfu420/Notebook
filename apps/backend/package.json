@@ -6,7 +6,8 @@
   "scripts": {
     "dev": "ts-node src/server.ts",
     "test": "jest",
-    "test:ci": "jest --ci --forceExit --detectOpenHandles --runInBand"
+    "test:ci": "jest --ci --forceExit --detectOpenHandles --runInBand",
+    "build": "tsc"
   },
   "keywords": [],
   "author": "Mejfu420",
