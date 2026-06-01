@@ -6,6 +6,7 @@ resources:
   - namespace.yaml
   - configmap.yaml
   - secrets.yaml
+  - managed-cert.yaml
   - backend-deploy.yaml
   - backend-service.yaml
   - backend-config.yaml

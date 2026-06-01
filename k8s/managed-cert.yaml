@@ -1,0 +1,8 @@
+apiVersion: networking.gke.io/v1
+kind: ManagedCertificate
+metadata:
+  name: my-certificate
+  namespace: red-notes
+spec:
+  domains:
+    - mejfu.dev
