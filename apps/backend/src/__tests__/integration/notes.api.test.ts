@@ -23,9 +23,9 @@ describe('Notes API & Auth Middleware', () => {
         jest.clearAllMocks();
     });
 
-    describe('GET /health', () => {
+    describe('GET /api/health', () => {
         it('should return 200 OK for health check', async () => {
-            const response = await request(app).get('/health');
+            const response = await request(app).get('/api/health');
             expect(response.status).toBe(200);
             expect(response.body).toEqual({ status: 'OK' });
         });
