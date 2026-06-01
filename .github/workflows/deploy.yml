@@ -69,4 +69,4 @@ jobs:
       - name: Update backend image
         run: |
           kubectl set image deployment/backend-deployment -n red-notes backend=${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}/backend:sha-${{ github.sha }}
-          kubectl rollout status deployment/backend-deployment -n red-notes --timeout=5m
+          kubectl rollout status deployment/backend-deployment -n red-notes --timeout=10m
