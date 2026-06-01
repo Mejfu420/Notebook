@@ -14,7 +14,7 @@ env:
   IMAGE_NAME: mejfu420/notebook
 
 jobs:
-  test:
+  test-backend:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -26,8 +26,11 @@ jobs:
       - run: cd apps/backend && npm run test:ci
 
   build-and-push:
-    needs: test
+    needs: test-backend
     runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        component: [backend, frontend]
     steps:
       - uses: actions/checkout@v4
       - uses: docker/setup-buildx-action@v3
@@ -39,12 +42,12 @@ jobs:
       - id: meta
         uses: docker/metadata-action@v5
         with:
-          images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}/backend
+          images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}/${{ matrix.component }}
           tags: type=sha,format=long
       - uses: docker/build-push-action@v5
         with:
           context: .
-          file: apps/backend/Dockerfile
+          file: apps/${{ matrix.component }}/Dockerfile
           push: true
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
@@ -64,10 +67,16 @@ jobs:
         with:
           cluster_name: "red-notes"
           location: "europe-central2"
-      - name: Deploy Kubernetes resources
+
+      - name: Deploy Kubernetes resources (apply kustomize)
         run: kubectl apply -k k8s/
+
       - name: Update backend image
         run: |
           kubectl set image deployment/backend-deployment -n red-notes backend=${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}/backend:sha-${{ github.sha }}
-          sleep 10
           kubectl rollout status deployment/backend-deployment -n red-notes --timeout=10m
+
+      - name: Update frontend image
+        run: |
+          kubectl set image deployment/frontend-deployment -n red-notes frontend=${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}/frontend:sha-${{ github.sha }}
+          kubectl rollout status deployment/frontend-deployment -n red-notes --timeout=10m

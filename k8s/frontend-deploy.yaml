@@ -1,15 +1,3 @@
-apiVersion: v1
-kind: Service
-metadata:
-  name: frontend-service
-  namespace: red-notes
-spec:
-  ports:
-    - port: 3000
-      targetPort: 3000
-  selector:
-    app: frontend
----
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -17,6 +5,11 @@ metadata:
   namespace: red-notes
 spec:
   replicas: 2
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxSurge: 1
+      maxUnavailable: 0
   selector:
     matchLabels:
       app: frontend
@@ -27,7 +20,8 @@ spec:
     spec:
       containers:
         - name: frontend
-          image: ghcr.io/mejfu420/notebook/frontend:${{ github.sha }}
+          image: ghcr.io/mejfu420/notebook/frontend
+          imagePullPolicy: IfNotPresent
           ports:
             - containerPort: 3000
           env:
@@ -41,3 +35,31 @@ spec:
                 configMapKeyRef:
                   name: app-config
                   key: NEXT_PUBLIC_API_URL
+          resources:
+            requests:
+              cpu: "100m"
+              memory: "256Mi"
+            limits:
+              cpu: "250m"
+              memory: "512Mi"
+          startupProbe:
+            httpGet:
+              path: /
+              port: 3000
+            initialDelaySeconds: 15
+            periodSeconds: 5
+            failureThreshold: 30
+          livenessProbe:
+            httpGet:
+              path: /
+              port: 3000
+            initialDelaySeconds: 60
+            periodSeconds: 10
+            failureThreshold: 6
+          readinessProbe:
+            httpGet:
+              path: /
+              port: 3000
+            initialDelaySeconds: 30
+            periodSeconds: 5
+            failureThreshold: 12

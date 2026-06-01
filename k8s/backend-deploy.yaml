@@ -18,25 +18,10 @@ spec:
       labels:
         app: backend
     spec:
-      securityContext:
-        runAsNonRoot: true
-        runAsUser: 1000
-      initContainers:
-        - name: wait-for-db
-          image: busybox
-          command:
-            [
-              "sh",
-              "-c",
-              "until nc -z postgres-service 5432; do echo waiting for db; sleep 2; done;",
-            ]
       containers:
         - name: backend
           image: ghcr.io/mejfu420/notebook/backend
-          securityContext:
-            allowPrivilegeEscalation: false
-            capabilities:
-              drop: ["ALL"]
+          imagePullPolicy: IfNotPresent
           ports:
             - containerPort: 8080
           env:
@@ -77,6 +62,13 @@ spec:
             limits:
               cpu: "250m"
               memory: "256Mi"
+          startupProbe:
+            httpGet:
+              path: /health
+              port: 8080
+            initialDelaySeconds: 10
+            periodSeconds: 5
+            failureThreshold: 30
           livenessProbe:
             httpGet:
               path: /health
@@ -88,6 +80,6 @@ spec:
             httpGet:
               path: /health
               port: 8080
-            initialDelaySeconds: 30
+            initialDelaySeconds: 15
             periodSeconds: 5
             failureThreshold: 12
