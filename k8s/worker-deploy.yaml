@@ -15,7 +15,7 @@ spec:
     spec:
       containers:
         - name: worker
-          image: ghcr.io/mejfu420/notebook/worker:latest
+          image: ghcr.io/mejfu420/notebook/worker:${{ github.sha }}
           env:
             - name: NODE_ENV
               valueFrom:

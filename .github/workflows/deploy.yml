@@ -22,19 +22,12 @@ jobs:
         with:
           node-version: 22
           cache: "npm"
-      - name: Update npm to latest
-        run: npm install -g npm@latest
       - run: npm install
-      - run: |
-          cd apps/backend
-          npm run test:ci
+      - run: cd apps/backend && npm run test:ci
 
   build-and-push:
     needs: test
     runs-on: ubuntu-latest
-    strategy:
-      matrix:
-        component: [backend]
     steps:
       - uses: actions/checkout@v4
       - uses: docker/setup-buildx-action@v3
@@ -46,12 +39,12 @@ jobs:
       - id: meta
         uses: docker/metadata-action@v5
         with:
-          images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}/${{ matrix.component }}
+          images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}/backend
           tags: type=sha,format=long
       - uses: docker/build-push-action@v5
         with:
           context: .
-          file: apps/${{ matrix.component }}/Dockerfile
+          file: apps/backend/Dockerfile
           push: true
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
@@ -63,24 +56,17 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-
-      - id: "auth"
-        name: "Authenticate to Google Cloud"
-        uses: "google-github-actions/auth@v2"
+      - uses: google-github-actions/auth@v2
         with:
           workload_identity_provider: "projects/486703429318/locations/global/workloadIdentityPools/github-pool/providers/github-pool"
           service_account: "github-actions-deployer@project-c35b3362-c904-47c0-bbd.iam.gserviceaccount.com"
-
-      - name: "Get GKE credentials"
-        uses: "google-github-actions/get-gke-credentials@v2"
+      - uses: google-github-actions/get-gke-credentials@v2
         with:
           cluster_name: "red-notes"
           location: "europe-central2"
-
-      - name: Deploy to Kubernetes
+      - name: Deploy Kubernetes resources
+        run: kubectl apply -k k8s/
+      - name: Update backend image
         run: |
-          kubectl apply -k k8s/
-          IMAGE_TAG="${{ github.sha }}"
-          NAMESPACE="red-notes"
-          kubectl set image deployment/backend-deployment -n $NAMESPACE backend=ghcr.io/mejfu420/notebook/backend:sha-${IMAGE_TAG}
-          kubectl rollout status deployment/backend-deployment -n $NAMESPACE --timeout=2m
+          kubectl set image deployment/backend-deployment -n red-notes backend=${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}/backend:sha-${{ github.sha }}
+          kubectl rollout status deployment/backend-deployment -n red-notes --timeout=5m

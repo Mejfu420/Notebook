@@ -6,8 +6,6 @@ resources:
   - network-policy.yaml
   - namespace.yaml
   - backend-deploy.yaml
-  - frontend-deploy.yaml
-  - worker-deploy.yaml
   - postgres-statefulset.yaml
   - redis-deploy.yaml
   - secrets.yaml
