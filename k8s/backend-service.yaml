@@ -4,7 +4,7 @@ metadata:
   name: backend-service
   namespace: red-notes
   annotations:
-    cloud.google.com/backend-config: '{"default": "backend-health-config-v2"}'
+    cloud.google.com/backend-config: '{"default": "backend-health-config-v2", "ports": {"80": "backend-health-config-v2"}}'
 spec:
   selector:
     app: backend
