@@ -1,6 +1,8 @@
 FROM node:20-alpine AS builder
 WORKDIR /app
 
+RUN apk add --no-cache --update python3 make g++
+
 COPY package*.json ./
 COPY apps/frontend/package*.json ./apps/frontend/
 COPY shared/ ./shared/
