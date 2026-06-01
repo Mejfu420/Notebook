@@ -7,6 +7,8 @@ COPY package*.json ./
 COPY apps/frontend/package*.json ./apps/frontend/
 COPY shared/ ./shared/
 
+RUN rm -f package-lock.json apps/frontend/package-lock.json
+
 RUN npm install --force --no-package-lock lightningcss@1.29.1 || true
 RUN npm install
 
