@@ -6,7 +6,7 @@ COPY apps/backend/ ./apps/backend/
 COPY apps/database/ ./apps/database/
 COPY shared/ ./shared/
 COPY prisma ./prisma/
-COPY prisma.config.ts ./
+COPY apps/database/prisma.config.ts ./
 
 ENV PRISMA_CONFIG_PATH=/app/apps/database/prisma.config.ts
 
