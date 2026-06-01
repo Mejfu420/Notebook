@@ -15,4 +15,4 @@ EXPOSE 8080
 
 ENV PRISMA_CONFIG_PATH=/app/apps/database/prisma.config.ts
 
-CMD npx prisma migrate deploy --schema=./apps/database/schema.prisma && node apps/backend/dist/server.ts
+CMD npx prisma migrate deploy --schema=./apps/database/schema.prisma && node apps/backend/dist/server.js
