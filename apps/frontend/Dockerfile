@@ -5,7 +5,7 @@ COPY package*.json ./
 COPY apps/frontend/package*.json ./apps/frontend/
 COPY shared/ ./shared/
 
-RUN npm ci
+RUN npm install
 
 COPY apps/frontend/ ./apps/frontend/
 
