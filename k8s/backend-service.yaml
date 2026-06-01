@@ -3,8 +3,8 @@ kind: Service
 metadata:
   name: backend-service
   namespace: red-notes
-  labels:
-    app: backend
+  annotations:
+    cloud.google.com/backend-config: '{"default": "backend-health-config"}'
 spec:
   selector:
     app: backend

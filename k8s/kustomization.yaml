@@ -8,6 +8,7 @@ resources:
   - secrets.yaml
   - backend-deploy.yaml
   - backend-service.yaml
+  - backend-config.yaml
   - frontend-deploy.yaml
   - frontend-service.yaml
   - postgres-statefulset.yaml
