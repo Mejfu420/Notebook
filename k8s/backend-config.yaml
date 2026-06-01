@@ -9,6 +9,6 @@ spec:
     timeoutSec: 5
     healthyThreshold: 1
     unhealthyThreshold: 2
-    port: 8080
+    port: 80
     type: HTTP
     requestPath: /api/health
