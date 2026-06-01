@@ -3,12 +3,15 @@ kind: Kustomization
 namespace: red-notes
 
 resources:
-  - network-policy.yaml
   - namespace.yaml
-  - backend-deploy.yaml
-  - postgres-statefulset.yaml
-  - redis-deploy.yaml
-  - secrets.yaml
   - configmap.yaml
-  - pdb.yaml
+  - secrets.yaml
+  - backend-deploy.yaml
+  - backend-service.yaml
+  - postgres-statefulset.yaml
+  - postgres-service.yaml
+  - redis-deploy.yaml
+  - redis-service.yaml
   - ingress.yaml
+  - network-policy.yaml
+  - pdb.yaml
