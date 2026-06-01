@@ -8,15 +8,15 @@ const app = express();
 
 app.use(cors());
 
+app.get('/api/health', (req, res) => {
+    res.status(200).json({ status: 'OK' });
+});
+
 app.use('/api/webhooks', webhookRoutes);
 
 app.use(express.json());
 app.use(clerkMiddleware());
 
 app.use('/api/notes', require('./routes/notes.routes').default);
-
-app.get('/api/health', (req, res) => {
-    res.status(200).json({ status: 'OK' });
-});
 
 export default app;
