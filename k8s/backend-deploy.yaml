@@ -72,6 +72,16 @@ spec:
                 secretKeyRef:
                   name: app-secrets
                   key: REDIS_URL
+            - name: CLERK_PUBLISHABLE_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: app-secrets
+                  key: CLERK_PUBLISHABLE_KEY
+            - name: CLERK_SECRET_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: app-secrets
+                  key: CLERK_SECRET_KEY
           resources:
             requests:
               cpu: "100m"
