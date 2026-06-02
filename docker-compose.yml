@@ -33,17 +33,6 @@ services:
       timeout: 5s
       retries: 5
 
-  db-migrator:
-    build:
-      context: .
-      dockerfile: apps/database/Dockerfile
-    container_name: secure_notes_migrator
-    environment:
-      DATABASE_URL: postgresql://dev_user:dev_password@postgres:5432/secure_notes?schema=public
-    depends_on:
-      postgres:
-        condition: service_healthy
-
   backend:
     build:
       context: .
@@ -55,23 +44,8 @@ services:
       NODE_ENV: development
       DATABASE_URL: postgresql://dev_user:dev_password@postgres:5432/secure_notes?schema=public
       REDIS_URL: redis://redis:6379
-    depends_on:
-      postgres:
-        condition: service_healthy
-      redis:
-        condition: service_healthy
-      db-migrator:
-        condition: service_completed_successfully
-
-  worker:
-    build:
-      context: .
-      dockerfile: apps/worker/Dockerfile
-    container_name: secure_notes_worker
-    environment:
-      NODE_ENV: development
-      DATABASE_URL: postgresql://dev_user:dev_password@postgres:5432/secure_notes?schema=public
-      REDIS_URL: redis://redis:6379
+      CLERK_PUBLISHABLE_KEY: pk_test_Y29tcGxldGVuZXNpdDA0LmNsdXJrLmFjY291bnRzLmRldGlQ
+      CLERK_SECRET_KEY: sk_test_Cj1gZs5oDnY0ZZf7jI5cTXlqVF0G5hSpX6LPiHXXql
     depends_on:
       postgres:
         condition: service_healthy
@@ -88,6 +62,9 @@ services:
     environment:
       NODE_ENV: development
       NEXT_PUBLIC_API_URL: http://localhost:8080
+      NEXT_SERVER_API_URL: http://backend:8080
+      CLERK_PUBLISHABLE_KEY: pk_test_Y29tcGxldGVuZXNpdDA0LmNsdXJrLmFjY291bnRzLmRldGlQ
+      CLERK_SECRET_KEY: sk_test_Cj1gZs5oDnY0ZZf7jI5cTXlqVF0G5hSpX6LPiHXXql
     depends_on:
       - backend
 

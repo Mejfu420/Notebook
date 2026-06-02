@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="900" height="180" viewBox="0 0 900 180">
+    <style>
+    .logo-text {
+      fill: #E60012;
+      font-family: "Noto Sans SC", "Microsoft YaHei", "PingFang SC", Arial, sans-serif;
+      font-weight: 700;
+    }
+  </style>
+
+    <text x="40" y="120" class="logo-text" font-size="96">
+        赤记 | RedNotes
+    </text>
+</svg>

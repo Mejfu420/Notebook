@@ -1,0 +1,108 @@
+.heroContainer {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    min-height: 90vh;
+    padding: 0 1rem;
+    text-align: center;
+    max-w: 42rem;
+    margin: 0 auto;
+    gap: 1.5rem;
+}
+
+.logoWrapper {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    font-size: 2.5rem;
+    font-weight: 950;
+    letter-spacing: -0.03em;
+
+    @media (min-width: 640px) {
+        font-size: 3rem;
+    }
+
+    .logoIcon {
+        width: 3rem;
+        height: 3rem;
+        border-radius: 0.75rem;
+        background-color: #dc2626;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: #ffffff;
+        font-size: 1.5rem;
+        font-weight: 700;
+        box-shadow: 0 10px 15px -3px rgba(220, 38, 38, 0.2);
+    }
+
+    .logoBrand {
+        .highlight {
+            color: #ef4444;
+        }
+    }
+}
+
+.catchyText {
+    color: #94a3b8;
+    font-size: 1rem;
+    max-width: 28rem;
+    line-height: 1.625;
+    font-weight: 500;
+
+    @media (min-width: 640px) {
+        font-size: 1.125rem;
+    }
+}
+
+.buttonGroup {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    margin-top: 0.5rem;
+}
+
+// Baza dla obu przycisków
+.btnBase {
+    height: 2.75rem;
+    padding: 0 1.25rem;
+    border-radius: 0.75rem;
+    font-weight: 600;
+    font-size: 0.875rem;
+    transition: all 0.2s ease;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+
+    @media (min-width: 640px) {
+        height: 3rem;
+        padding: 0 1.5rem;
+        font-size: 1rem;
+    }
+}
+
+.btnSignIn {
+    @extend .btnBase;
+    border: 1px solid #1e293b;
+    background-color: #0f172a;
+    color: #f8fafc;
+
+    &:hover {
+        background-color: #1e293b;
+        border-color: #334155;
+    }
+}
+
+.btnSignUp {
+    @extend .btnBase;
+    border: none;
+    background-color: #dc2626;
+    color: #ffffff;
+    box-shadow: 0 10px 15px -3px rgba(220, 38, 38, 0.2);
+
+    &:hover {
+        background-color: #ef4444;
+    }
+}

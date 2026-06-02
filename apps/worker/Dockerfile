@@ -5,7 +5,7 @@ COPY package*.json ./
 COPY apps/worker/package*.json ./apps/worker/
 COPY shared/ ./shared/
 
-RUN npm ci
+RUN npm install
 
 COPY apps/worker/ ./apps/worker/
 
@@ -19,7 +19,7 @@ ENV NODE_ENV=production
 USER node
 
 COPY apps/worker/package*.json ./
-RUN npm ci --only=production
+RUN npm install
 
 COPY --from=builder /app/apps/worker/dist ./dist
 

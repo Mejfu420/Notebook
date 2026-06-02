@@ -12,6 +12,7 @@ export const getNotes = async (req: Request, res: Response) => {
         });
         res.json(notes);
     } catch (error) {
+        console.log(error);
         res.status(500).json({ error: "Error fetching notes" });
     }
 };
