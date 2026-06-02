@@ -25,7 +25,7 @@ COPY --from=builder /app/apps/frontend/.next ./.next
 COPY --from=builder /app/apps/frontend/package.json ./package.json
 
 COPY --from=builder /app/package*.json ./
-RUN npm install --only=production
+RUN npm install
 
 USER nextjs
 EXPOSE 3000
