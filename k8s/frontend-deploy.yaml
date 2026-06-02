@@ -25,6 +25,11 @@ spec:
           ports:
             - containerPort: 3000
           env:
+            - name: NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: app-secrets
+                  key: NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY
             - name: NODE_ENV
               valueFrom:
                 configMapKeyRef:
