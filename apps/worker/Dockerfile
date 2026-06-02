@@ -9,6 +9,9 @@ RUN npm install
 
 COPY apps/worker/ ./apps/worker/
 
+ARG CLERK_SECRET_KEY
+ENV CLERK_SECRET_KEY=$CLERK_SECRET_KEY
+
 WORKDIR /app/apps/worker
 RUN npm run build
 

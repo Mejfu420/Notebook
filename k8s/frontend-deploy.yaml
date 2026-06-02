@@ -30,11 +30,11 @@ spec:
                 secretKeyRef:
                   name: app-secrets
                   key: NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY
-            - name: NEXT_SECRET_CLERK_PUBLISHABLE_KEY
+            - name: CLERK_SECRET_KEY
               valueFrom:
                 secretKeyRef:
                   name: app-secrets
-                  key: NEXT_SECRET_CLERK_PUBLISHABLE_KEY
+                  key: CLERK_SECRET_KEY
             - name: NODE_ENV
               valueFrom:
                 configMapKeyRef:
