@@ -69,8 +69,22 @@ jobs:
           location: "europe-central2"
 
       - name: Deploy with Kustomize
+        env:
+          POSTGRES_USER: ${{ secrets.POSTGRES_USER }}
+          POSTGRES_PASSWORD: ${{ secrets.POSTGRES_PASSWORD }}
+          POSTGRES_DB: ${{ secrets.POSTGRES_DB }}
+          DATABASE_URL: ${{ secrets.DATABASE_URL }}
+          REDIS_URL: ${{ secrets.REDIS_URL }}
+          NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY: ${{ secrets.NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY }}
+          CLERK_PUBLISHABLE_KEY: ${{ secrets.CLERK_PUBLISHABLE_KEY }}
+          CLERK_SECRET_KEY: ${{ secrets.CLERK_SECRET_KEY }}
+          CLERK_WEBHOOK_SECRET: ${{ secrets.CLERK_WEBHOOK_SECRET }}
+          API_URL: ${{ secrets.API_URL }}
         run: |
           cd k8s
+          
+          envsubst < secrets.yaml > secrets.yaml.tmp && mv secrets.yaml.tmp secrets.yaml
+          
           kustomize edit set image ghcr.io/mejfu420/notebook/backend=${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}/backend:sha-${{ github.sha }}
           kustomize edit set image ghcr.io/mejfu420/notebook/frontend=${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}/frontend:sha-${{ github.sha }}
 
