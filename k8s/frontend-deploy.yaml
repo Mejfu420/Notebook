@@ -40,11 +40,11 @@ spec:
                 configMapKeyRef:
                   name: app-config
                   key: NODE_ENV
-            - name: NEXT_PUBLIC_API_URL
+            - name: API_URL
               valueFrom:
                 secretKeyRef:
                   name: app-secrets
-                  key: NEXT_PUBLIC_API_URL
+                  key: API_URL
           resources:
             requests:
               cpu: "100m"
