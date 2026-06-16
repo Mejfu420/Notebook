@@ -27,6 +27,7 @@ export const createNote = async (req: Request, res: Response) => {
         });
         res.status(201).json(newNote);
     } catch (error) {
+        console.error("Prisma Create Error:", error);
         res.status(500).json({ error: "Error creating note" });
     }
 };

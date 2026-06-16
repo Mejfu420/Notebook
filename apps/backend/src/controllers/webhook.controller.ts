@@ -17,7 +17,7 @@ export const clerkWebhookHandler = async (req: Request, res: Response) => {
         return res.status(400).json({ error: 'Missing Svix headers' });
     }
 
-    const payload = req.body.toString();
+    const payload = req.body.toString('utf-8');
     const wh = new Webhook(WEBHOOK_SECRET);
 
     let evt: any;

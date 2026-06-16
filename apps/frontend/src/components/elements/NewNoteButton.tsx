@@ -4,6 +4,7 @@ import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { useAuth } from "@clerk/nextjs";
 import { createNote } from "@/libs/api";
+import styles from "@/styles/NewNoteButton.module.scss";
 
 export default function NewNoteButton() {
     const router = useRouter();
@@ -30,7 +31,7 @@ export default function NewNoteButton() {
         <button
             onClick={handleCreate}
             disabled={isLoading}
-            className="px-4 py-2 bg-red-600 hover:bg-red-700 text-white font-medium rounded-lg transition-colors disabled:opacity-50"
+            className={styles.newNoteBtn}
         >
             {isLoading ? "Creating..." : "New Note"}
         </button>

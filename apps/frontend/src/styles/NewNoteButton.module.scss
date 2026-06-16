@@ -1,0 +1,35 @@
+$red-primary: #dc2626;
+$red-hover: #ef4444;
+
+.newNoteBtn {
+    height: 2.75rem;
+    padding: 0 1.5rem;
+    border-radius: 0.75rem;
+    font-weight: 600;
+    font-size: 0.9rem;
+    border: none;
+    background-color: $red-primary;
+    color: #ffffff;
+    box-shadow: 0 10px 15px -3px rgba(220, 38, 38, 0.2);
+    transition: all 0.2s ease;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+
+    &:hover {
+        background-color: $red-hover;
+        transform: translateY(-1px);
+    }
+
+    &:active {
+        transform: translateY(0);
+    }
+
+    &:disabled {
+        opacity: 0.5;
+        cursor: not-allowed;
+        transform: none;
+        box-shadow: none;
+    }
+}
