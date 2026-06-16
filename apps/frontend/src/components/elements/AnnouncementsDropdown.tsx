@@ -24,7 +24,6 @@ export default function AnnouncementsDropdown() {
         loadAnnouncements();
     }, []);
 
-    // Zamknij dropdown po kliknięciu poza nim
     useEffect(() => {
         const handleClickOutside = (event: MouseEvent) => {
             if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
@@ -44,7 +43,7 @@ export default function AnnouncementsDropdown() {
                 onClick={toggleDropdown}
                 aria-label="Notifications"
             >
-                <span className={styles.bellIcon}>🔔</span>
+                <span className={styles.bellIcon}><img className={styles.bellIconImg} src="/bell.svg" alt="Bell" /></span>
                 {announcements.length > 0 && (
                     <span className={styles.badge}>{announcements.length}</span>
                 )}
