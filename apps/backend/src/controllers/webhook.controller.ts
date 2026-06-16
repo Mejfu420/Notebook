@@ -41,14 +41,24 @@ export const clerkWebhookHandler = async (req: Request, res: Response) => {
                 const primaryEmail = evt.data.email_addresses[0]?.email_address;
                 const role = evt.data.public_metadata?.role || 'user';
 
-                await prisma.user.create({
-                    data: {
+                if (!primaryEmail) {
+                    return res.status(400).json({ error: 'Missing email address in event data' });
+                }
+
+                await prisma.user.upsert({
+                    where: { id: id },
+                    update: {
+                        email: primaryEmail,
+                        role: role,
+                    },
+                    create: {
                         id: id,
                         email: primaryEmail,
                         role: role,
                     },
                 });
-                return res.status(201).json({ success: true, message: 'User created in database' });
+
+                return res.status(201).json({ success: true, message: 'User created or updated in database' });
             }
 
             case 'user.updated': {
@@ -64,10 +74,18 @@ export const clerkWebhookHandler = async (req: Request, res: Response) => {
             }
 
             case 'user.deleted': {
-                await prisma.user.delete({
-                    where: { id: id },
-                });
-                return res.status(200).json({ success: true, message: 'User deleted from database' });
+                try {
+                    await prisma.user.delete({
+                        where: { id: id },
+                    });
+                    return res.status(200).json({ success: true, message: 'User deleted from database' });
+                } catch (error: any) {
+                    if (error.code === 'P2025') {
+                        console.log(`User ${id} already deleted or not found, skipping.`);
+                        return res.status(200).json({ success: true, message: 'User already gone' });
+                    }
+                    throw error;
+                }
             }
 
             default:

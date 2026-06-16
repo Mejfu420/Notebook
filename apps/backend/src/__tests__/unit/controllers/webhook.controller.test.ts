@@ -5,7 +5,7 @@ import { prisma } from '../../../libs/prisma';
 jest.mock('../../../libs/prisma', () => ({
     prisma: {
         user: {
-            create: jest.fn(),
+            upsert: jest.fn(),
             update: jest.fn(),
             delete: jest.fn(),
         },
@@ -80,22 +80,24 @@ describe('Webhook Controller (Unit)', () => {
         expect(res.json).toHaveBeenCalledWith({ error: 'Verification failed' });
     });
 
-    it('should create a user with default role and return 201 on valid user.created event', async () => {
-        jest.mocked(prisma.user.create).mockResolvedValue({ id: 'user_1', email: 'u@test.com', role: 'user' } as any);
+    it('should upsert a user and return 201 on valid user.created event', async () => {
+        jest.mocked(prisma.user.upsert).mockResolvedValue({ id: 'user_1', email: 'u@test.com', role: 'user' } as any);
 
         await clerkWebhookHandler(req, res);
 
-        expect(prisma.user.create).toHaveBeenCalledWith({
-            data: { id: 'user_1', email: 'u@test.com', role: 'user' },
+        expect(prisma.user.upsert).toHaveBeenCalledWith({
+            where: { id: 'user_1' },
+            update: { email: 'u@test.com', role: 'user' },
+            create: { id: 'user_1', email: 'u@test.com', role: 'user' },
         });
         expect(res.status).toHaveBeenCalledWith(201);
-        expect(res.json).toHaveBeenCalledWith({ success: true, message: 'User created in database' });
+        expect(res.json).toHaveBeenCalledWith({ success: true, message: 'User created or updated in database' });
     });
 
     it('should update user role and return 200 on valid user.updated event', async () => {
-        req.body = Buffer.from(JSON.stringify({ 
-            type: 'user.updated', 
-            data: { id: 'user_1', public_metadata: { role: 'admin' } } 
+        req.body = Buffer.from(JSON.stringify({
+            type: 'user.updated',
+            data: { id: 'user_1', public_metadata: { role: 'admin' } }
         }));
 
         await clerkWebhookHandler(req, res);
@@ -109,9 +111,9 @@ describe('Webhook Controller (Unit)', () => {
     });
 
     it('should delete user and return 200 on valid user.deleted event', async () => {
-        req.body = Buffer.from(JSON.stringify({ 
-            type: 'user.deleted', 
-            data: { id: 'user_1' } 
+        req.body = Buffer.from(JSON.stringify({
+            type: 'user.deleted',
+            data: { id: 'user_1' }
         }));
 
         await clerkWebhookHandler(req, res);
@@ -121,6 +123,16 @@ describe('Webhook Controller (Unit)', () => {
         });
         expect(res.status).toHaveBeenCalledWith(200);
         expect(res.json).toHaveBeenCalledWith({ success: true, message: 'User deleted from database' });
+    });
+
+    it('should handle P2025 error on user.deleted gracefully', async () => {
+        req.body = Buffer.from(JSON.stringify({ type: 'user.deleted', data: { id: 'user_1' } }));
+        jest.mocked(prisma.user.delete).mockRejectedValue({ code: 'P2025' });
+
+        await clerkWebhookHandler(req, res);
+
+        expect(res.status).toHaveBeenCalledWith(200);
+        expect(res.json).toHaveBeenCalledWith({ success: true, message: 'User already gone' });
     });
 
     it('should return 500 if prisma database operation fails', async () => {
