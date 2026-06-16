@@ -1,6 +1,6 @@
 const API_BASE_URL = typeof window === 'undefined'
     ? (process.env.INTERNAL_BACKEND_URL || 'http://backend-service')
-    : (process.env.API_URL || 'https://mehfu.dev');
+    : (process.env.API_URL || 'https://mejfu.dev');
 
 export interface Note {
     id: string | number;
