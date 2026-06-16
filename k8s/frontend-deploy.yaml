@@ -45,6 +45,8 @@ spec:
                 secretKeyRef:
                   name: app-secrets
                   key: API_URL
+            - name: INTERNAL_BACKEND_URL
+              value: "http://backend-service"
           resources:
             requests:
               cpu: "100m"

@@ -1,4 +1,6 @@
-const API_BASE_URL = process.env.API_URL || 'http://localhost:8080';
+const API_BASE_URL = typeof window === 'undefined'
+    ? (process.env.INTERNAL_BACKEND_URL || 'http://backend-service')
+    : (process.env.API_URL || 'https://mehfu.dev');
 
 export interface Note {
     id: string | number;
