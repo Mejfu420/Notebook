@@ -51,5 +51,6 @@ export const clerkWebhookHandler = async (req: Request, res: Response) => {
         }
     }
 
+    console.log('User created event received for user ID:', id);
     res.status(200).json({ received: true });
 };
