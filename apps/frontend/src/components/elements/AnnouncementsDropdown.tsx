@@ -43,7 +43,7 @@ export default function AnnouncementsDropdown() {
                 onClick={toggleDropdown}
                 aria-label="Notifications"
             >
-                <span className={styles.bellIcon}><img className={styles.bellIconImg} src="/bell.svg" alt="Bell" /></span>
+                <span className={styles.bellIcon}><img className={styles.bellIconImg} src="/images/bell.png" alt="Bell" /></span>
                 {announcements.length > 0 && (
                     <span className={styles.badge}>{announcements.length}</span>
                 )}
