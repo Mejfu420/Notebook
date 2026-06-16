@@ -177,7 +177,7 @@ describe('Webhook Controller (Unit)', () => {
     it('should update user role to default "user" if role not provided in user.updated', async () => {
         req.body = Buffer.from(JSON.stringify({
             type: 'user.updated',
-            data: { id: 'user_1', public_metadata: {} } // lub pomiń public_metadata całkowicie
+            data: { id: 'user_1', public_metadata: {} }
         }));
 
         await clerkWebhookHandler(req, res);

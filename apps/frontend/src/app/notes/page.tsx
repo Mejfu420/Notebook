@@ -3,6 +3,7 @@ import { fetchUserNotes } from '@/libs/api'
 import Link from 'next/link'
 import NewNoteButton from '@/components/elements/NewNoteButton'
 import DeleteNoteButton from '@/components/elements/DeleteNoteButton'
+import AnnouncementsDropdown from '@/components/elements/AnnouncementsDropdown'
 import styles from '@/styles/notes.module.scss'
 
 export default async function NotesPage() {
@@ -16,10 +17,13 @@ export default async function NotesPage() {
         <main className={styles.notesContainer}>
             {notes.length > 0 && (
                 <div className={styles.headerSection}>
-                    <div>
+                    <div className={styles.headerLeft}>
                         <h1 className={styles.title}>Welcome, {user?.firstName || 'user'}!</h1>
                     </div>
-                    <NewNoteButton />
+                    <div className={styles.headerRight}>
+                        <AnnouncementsDropdown />
+                        <NewNoteButton />
+                    </div>
                 </div>
             )}
 
