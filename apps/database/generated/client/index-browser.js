@@ -135,6 +135,13 @@ exports.Prisma.NoteScalarFieldEnum = {
   createdAt: 'createdAt'
 };
 
+exports.Prisma.AnnouncementScalarFieldEnum = {
+  id: 'id',
+  title: 'title',
+  content: 'content',
+  createdAt: 'createdAt'
+};
+
 exports.Prisma.SortOrder = {
   asc: 'asc',
   desc: 'desc'
@@ -148,7 +155,8 @@ exports.Prisma.QueryMode = {
 
 exports.Prisma.ModelName = {
   User: 'User',
-  Note: 'Note'
+  Note: 'Note',
+  Announcement: 'Announcement'
 };
 
 /**

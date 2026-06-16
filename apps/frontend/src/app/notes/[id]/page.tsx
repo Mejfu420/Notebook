@@ -12,8 +12,8 @@ export default async function NoteDetailPage({ params }: Props) {
 
     const initialNote = {
         id,
-        title: "Fetched Note Title",
-        content: "Fetched Note Content"
+        title: "Untitled Note",
+        content: ""
     }
 
     return (

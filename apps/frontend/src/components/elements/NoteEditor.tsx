@@ -1,8 +1,9 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
+import { updateNote, deleteNote, fetchNote } from "@/libs/api";
 import styles from "@/styles/noteDetail.module.scss";
 
 interface NoteEditorProps {
@@ -20,13 +21,46 @@ export default function NoteEditor({ noteId, token, initialNote }: NoteEditorPro
     const [isEditing, setIsEditing] = useState(false);
     const [title, setTitle] = useState(initialNote.title);
     const [content, setContent] = useState(initialNote.content);
+    const [draftTitle, setDraftTitle] = useState(initialNote.title);
+    const [draftContent, setDraftContent] = useState(initialNote.content);
+
+    useEffect(() => {
+        async function loadFreshNote() {
+            const freshNote = await fetchNote(token, noteId);
+            if (freshNote) {
+                setTitle(freshNote.title);
+                setContent(freshNote.content);
+                if (!isEditing) {
+                    setDraftTitle(freshNote.title);
+                    setDraftContent(freshNote.content);
+                }
+            }
+        }
+        loadFreshNote();
+    }, [noteId, token, isEditing]);
+
+    const handleStartEdit = () => {
+        setDraftTitle(title);
+        setDraftContent(content);
+        setIsEditing(true);
+    };
 
     const handleSave = async () => {
-        setIsEditing(false);
+        const updated = await updateNote(token, noteId, draftTitle, draftContent);
+        if (updated) {
+            setTitle(updated.title);
+            setContent(updated.content);
+            setIsEditing(false);
+            router.refresh();
+        }
     };
 
     const handleDelete = async () => {
-        router.push("/notes");
+        const success = await deleteNote(token, noteId);
+        if (success) {
+            router.push("/notes");
+            router.refresh();
+        }
     };
 
     return (
@@ -42,8 +76,8 @@ export default function NoteEditor({ noteId, token, initialNote }: NoteEditorPro
                     {isEditing ? (
                         <input
                             type="text"
-                            value={title}
-                            onChange={(e) => setTitle(e.target.value)}
+                            value={draftTitle}
+                            onChange={(e) => setDraftTitle(e.target.value)}
                             className={styles.titleInput}
                         />
                     ) : (
@@ -62,7 +96,7 @@ export default function NoteEditor({ noteId, token, initialNote }: NoteEditorPro
                             </>
                         ) : (
                             <>
-                                <button onClick={() => setIsEditing(true)} className={styles.btnEdit}>
+                                <button onClick={handleStartEdit} className={styles.btnEdit}>
                                     Edit Note
                                 </button>
                                 <button onClick={handleDelete} className={styles.btnDelete}>
@@ -76,8 +110,8 @@ export default function NoteEditor({ noteId, token, initialNote }: NoteEditorPro
                 <div className={styles.contentArea}>
                     {isEditing ? (
                         <textarea
-                            value={content}
-                            onChange={(e) => setContent(e.target.value)}
+                            value={draftContent}
+                            onChange={(e) => setDraftContent(e.target.value)}
                             className={styles.contentTextarea}
                         />
                     ) : (

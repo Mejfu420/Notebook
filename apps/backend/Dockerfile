@@ -9,10 +9,13 @@ COPY shared/ ./shared/
 COPY apps/database/prisma.config.ts ./
 
 RUN npm install
+
+RUN npx prisma generate --schema=./apps/database/schema.prisma
+
 RUN npm run build --workspace=backend
 
 EXPOSE 8080
 
 ENV PRISMA_CONFIG_PATH=/app/apps/database/prisma.config.ts
 
-CMD npx prisma db push --schema=./apps/database/schema.prisma && node apps/backend/dist/server.js
+CMD npx prisma migrate deploy --schema=./apps/database/schema.prisma && node apps/backend/dist/server.js

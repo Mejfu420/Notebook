@@ -18,5 +18,6 @@ app.use(express.json());
 app.use(clerkMiddleware());
 
 app.use('/api/notes', require('./routes/notes.routes').default);
+app.use('/api/announcements', require('./routes/announcements.routes').default);
 
 export default app;
