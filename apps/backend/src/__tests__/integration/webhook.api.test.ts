@@ -97,6 +97,8 @@ describe('Webhook API Tests', () => {
                 data: { id: 'user_clerk_999', public_metadata: { role: 'admin' } },
             };
 
+            jest.mocked(prisma.user.update).mockResolvedValue({} as any);
+
             const response = await request(app)
                 .post('/api/webhooks/clerk')
                 .set('svix-id', 'msg_valid')
@@ -115,6 +117,8 @@ describe('Webhook API Tests', () => {
                 type: 'user.deleted',
                 data: { id: 'user_clerk_999' },
             };
+
+            jest.mocked(prisma.user.delete).mockResolvedValue({} as any);
 
             const response = await request(app)
                 .post('/api/webhooks/clerk')

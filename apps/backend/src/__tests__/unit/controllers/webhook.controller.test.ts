@@ -136,7 +136,7 @@ describe('Webhook Controller (Unit)', () => {
     });
 
     it('should return 500 if prisma database operation fails', async () => {
-        jest.mocked(prisma.user.create).mockRejectedValue(new Error('Prisma Error'));
+        jest.mocked(prisma.user.upsert).mockRejectedValue(new Error('Prisma Error'));
 
         await clerkWebhookHandler(req, res);
 
@@ -151,5 +151,42 @@ describe('Webhook Controller (Unit)', () => {
 
         expect(res.status).toHaveBeenCalledWith(200);
         expect(res.json).toHaveBeenCalledWith({ received: true, message: 'Event unhandled but acknowledged' });
+    });
+
+    it('should return 400 if email is missing in user.created event', async () => {
+        req.body = Buffer.from(JSON.stringify({
+            type: 'user.created',
+            data: { id: 'user_1', email_addresses: [] }
+        }));
+        await clerkWebhookHandler(req, res);
+        expect(res.status).toHaveBeenCalledWith(400);
+        expect(res.json).toHaveBeenCalledWith({ error: 'Missing email address in event data' });
+    });
+
+    it('should return 500 on database error other than P2025 in user.deleted', async () => {
+        req.body = Buffer.from(JSON.stringify({
+            type: 'user.deleted',
+            data: { id: 'user_1' }
+        }));
+        jest.mocked(prisma.user.delete).mockRejectedValue(new Error('Some other DB error'));
+        await clerkWebhookHandler(req, res);
+        expect(res.status).toHaveBeenCalledWith(500);
+        expect(res.json).toHaveBeenCalledWith({ error: 'Error updating database' });
+    });
+
+    it('should update user role to default "user" if role not provided in user.updated', async () => {
+        req.body = Buffer.from(JSON.stringify({
+            type: 'user.updated',
+            data: { id: 'user_1', public_metadata: {} } // lub pomiń public_metadata całkowicie
+        }));
+
+        await clerkWebhookHandler(req, res);
+
+        expect(prisma.user.update).toHaveBeenCalledWith({
+            where: { id: 'user_1' },
+            data: { role: 'user' },
+        });
+        expect(res.status).toHaveBeenCalledWith(200);
+        expect(res.json).toHaveBeenCalledWith({ success: true, message: 'User role updated in database' });
     });
 });
