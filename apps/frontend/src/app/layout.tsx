@@ -1,6 +1,7 @@
 import type { Metadata } from 'next'
 import { ClerkProvider, Show, UserButton } from '@clerk/nextjs'
 import { Geist, Geist_Mono } from 'next/font/google'
+import Header from '@/components/layout/Header'
 import '@/styles/globals.scss'
 
 const geistSans = Geist({
@@ -29,12 +30,7 @@ export default function RootLayout({
         <ClerkProvider>
 
           <Show when="signed-in">
-            <header className="main-header">
-              <div className="logo-brand">
-                Red<span className="highlight">Notes</span>
-              </div>
-              <UserButton afterSignOutUrl="/" />
-            </header>
+            <Header />
           </Show>
 
           {children}
