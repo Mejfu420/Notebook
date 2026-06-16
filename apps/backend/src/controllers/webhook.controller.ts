@@ -35,22 +35,47 @@ export const clerkWebhookHandler = async (req: Request, res: Response) => {
     const { id } = evt.data;
     const eventType = evt.type;
 
-    if (eventType === 'user.created') {
-        const primaryEmail = evt.data.email_addresses[0]?.email_address;
+    try {
+        switch (eventType) {
+            case 'user.created': {
+                const primaryEmail = evt.data.email_addresses[0]?.email_address;
+                const role = evt.data.public_metadata?.role || 'user';
 
-        try {
-            await prisma.user.create({
-                data: {
-                    id: id,
-                    email: primaryEmail,
-                },
-            });
-            return res.status(201).json({ success: true, message: 'User created in database' });
-        } catch (error) {
-            return res.status(500).json({ error: 'Error saving user to database' });
+                await prisma.user.create({
+                    data: {
+                        id: id,
+                        email: primaryEmail,
+                        role: role,
+                    },
+                });
+                return res.status(201).json({ success: true, message: 'User created in database' });
+            }
+
+            case 'user.updated': {
+                const role = evt.data.public_metadata?.role || 'user';
+
+                await prisma.user.update({
+                    where: { id: id },
+                    data: {
+                        role: role,
+                    },
+                });
+                return res.status(200).json({ success: true, message: 'User role updated in database' });
+            }
+
+            case 'user.deleted': {
+                await prisma.user.delete({
+                    where: { id: id },
+                });
+                return res.status(200).json({ success: true, message: 'User deleted from database' });
+            }
+
+            default:
+                console.log(`Unhandled webhook event type: ${eventType} for user ID: ${id}`);
+                return res.status(200).json({ received: true, message: 'Event unhandled but acknowledged' });
         }
+    } catch (error) {
+        console.error(`Error processing webhook (${eventType}):`, error);
+        return res.status(500).json({ error: 'Error updating database' });
     }
-
-    console.log('User created event received for user ID:', id);
-    res.status(200).json({ received: true });
 };

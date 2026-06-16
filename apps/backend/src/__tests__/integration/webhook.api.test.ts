@@ -7,6 +7,8 @@ jest.mock('../../libs/prisma', () => ({
     prisma: {
         user: {
             create: jest.fn(),
+            update: jest.fn(),
+            delete: jest.fn(),
         },
     },
 }));
@@ -74,13 +76,13 @@ describe('Webhook API Tests', () => {
             expect(response.body).toEqual({ error: 'Verification failed' });
         });
 
-        it('should create a user and return 201 on valid user.created event', async () => {
+        it('should create a user with default role and return 201 on valid user.created event', async () => {
             const mockPayload = {
                 type: 'user.created',
                 data: { id: 'user_clerk_999', email_addresses: [{ email_address: 'mejfu@example.com' }] },
             };
 
-            jest.mocked(prisma.user.create).mockResolvedValue({ id: 'user_clerk_999', email: 'mejfu@example.com' } as any);
+            jest.mocked(prisma.user.create).mockResolvedValue({ id: 'user_clerk_999', email: 'mejfu@example.com', role: 'user' } as any);
 
             const response = await request(app)
                 .post('/api/webhooks/clerk')
@@ -93,11 +95,54 @@ describe('Webhook API Tests', () => {
             expect(response.status).toBe(201);
             expect(response.body).toEqual({ success: true, message: 'User created in database' });
             expect(prisma.user.create).toHaveBeenCalledWith({
-                data: { id: 'user_clerk_999', email: 'mejfu@example.com' },
+                data: { id: 'user_clerk_999', email: 'mejfu@example.com', role: 'user' },
             });
         });
 
-        it('should return 500 if saving user to database fails', async () => {
+        it('should update user role and return 200 on valid user.updated event', async () => {
+            const mockPayload = {
+                type: 'user.updated',
+                data: { id: 'user_clerk_999', public_metadata: { role: 'admin' } },
+            };
+
+            const response = await request(app)
+                .post('/api/webhooks/clerk')
+                .set('svix-id', 'msg_valid')
+                .set('svix-timestamp', '1234567890')
+                .set('svix-signature', 'valid-signature')
+                .set('Content-Type', 'application/json')
+                .send(JSON.stringify(mockPayload));
+
+            expect(response.status).toBe(200);
+            expect(response.body).toEqual({ success: true, message: 'User role updated in database' });
+            expect(prisma.user.update).toHaveBeenCalledWith({
+                where: { id: 'user_clerk_999' },
+                data: { role: 'admin' },
+            });
+        });
+
+        it('should delete user and return 200 on valid user.deleted event', async () => {
+            const mockPayload = {
+                type: 'user.deleted',
+                data: { id: 'user_clerk_999' },
+            };
+
+            const response = await request(app)
+                .post('/api/webhooks/clerk')
+                .set('svix-id', 'msg_valid')
+                .set('svix-timestamp', '1234567890')
+                .set('svix-signature', 'valid-signature')
+                .set('Content-Type', 'application/json')
+                .send(JSON.stringify(mockPayload));
+
+            expect(response.status).toBe(200);
+            expect(response.body).toEqual({ success: true, message: 'User deleted from database' });
+            expect(prisma.user.delete).toHaveBeenCalledWith({
+                where: { id: 'user_clerk_999' },
+            });
+        });
+
+        it('should return 500 if database operation fails', async () => {
             const mockPayload = {
                 type: 'user.created',
                 data: { id: 'user_fail', email_addresses: [{ email_address: 'fail@example.com' }] },
@@ -114,13 +159,13 @@ describe('Webhook API Tests', () => {
                 .send(JSON.stringify(mockPayload));
 
             expect(response.status).toBe(500);
-            expect(response.body).toEqual({ error: 'Error saving user to database' });
+            expect(response.body).toEqual({ error: 'Error updating database' });
         });
 
-        it('should return 200 received: true for other valid webhook events', async () => {
+        it('should return 200 with generic message for other unhandled valid webhook events', async () => {
             const mockPayload = {
-                type: 'user.updated',
-                data: { id: 'user_123' },
+                type: 'session.created',
+                data: { id: 'sess_123' },
             };
 
             const response = await request(app)
@@ -132,7 +177,7 @@ describe('Webhook API Tests', () => {
                 .send(JSON.stringify(mockPayload));
 
             expect(response.status).toBe(200);
-            expect(response.body).toEqual({ received: true });
+            expect(response.body).toEqual({ received: true, message: 'Event unhandled but acknowledged' });
         });
     });
 });
