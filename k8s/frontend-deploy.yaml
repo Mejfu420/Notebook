@@ -42,8 +42,8 @@ spec:
                   key: NODE_ENV
             - name: NEXT_PUBLIC_API_URL
               valueFrom:
-                configMapKeyRef:
-                  name: app-config
+                secretKeyRef:
+                  name: app-secrets
                   key: NEXT_PUBLIC_API_URL
           resources:
             requests:
