@@ -1,0 +1,170 @@
+$bg-dark: #020617;
+$text-light: #f8fafc;
+$text-muted: #94a3b8;
+$red-primary: #dc2626;
+$red-hover: #ef4444;
+$border-dark: #1e293b;
+$bg-card: #0f172a;
+
+.container {
+    padding: 2rem 1rem;
+    max-width: 48rem;
+    margin: 0 auto;
+    min-height: calc(100vh - 4rem);
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+}
+
+.backNav {
+    display: flex;
+}
+
+.backLink {
+    color: $text-muted;
+    text-decoration: none;
+    font-size: 0.95rem;
+    transition: color 0.2s;
+
+    &:hover {
+        color: $text-light;
+    }
+}
+
+.noteWindow {
+    background-color: $bg-card;
+    border: 1px solid $border-dark;
+    border-radius: 0.75rem;
+    padding: 2rem;
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+    box-shadow: 0 10px 25px -15px rgba(0, 0, 0, 0.7);
+}
+
+.header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 1.5rem;
+    border-bottom: 1px solid $border-dark;
+    padding-bottom: 1.5rem;
+}
+
+.title {
+    font-size: 2rem;
+    font-weight: 700;
+    letter-spacing: -0.02em;
+    color: $text-light;
+}
+
+.titleInput {
+    flex: 1;
+    background-color: $bg-dark;
+    border: 1px solid $border-dark;
+    border-radius: 0.5rem;
+    padding: 0.5rem 0.75rem;
+    color: $text-light;
+    font-size: 1.75rem;
+    font-weight: 700;
+    outline: none;
+
+    &:focus {
+        border-color: #334155;
+    }
+}
+
+.actions {
+    display: flex;
+    gap: 0.75rem;
+}
+
+.btnBase {
+    height: 2.5rem;
+    padding: 0 1rem;
+    border-radius: 0.5rem;
+    font-weight: 600;
+    font-size: 0.9rem;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    border: none;
+}
+
+.btnEdit {
+    @extend .btnBase;
+    background-color: #1e293b;
+    color: $text-light;
+    border: 1px solid $border-dark;
+
+    &:hover {
+        background-color: #334155;
+    }
+}
+
+.btnDelete {
+    @extend .btnBase;
+    background-color: transparent;
+    color: $text-muted;
+    border: 1px solid $border-dark;
+
+    &:hover {
+        color: #ffffff;
+        background-color: $red-primary;
+        border-color: $red-primary;
+    }
+}
+
+.btnSave {
+    @extend .btnBase;
+    background-color: $red-primary;
+    color: #ffffff;
+
+    &:hover {
+        background-color: $red-hover;
+    }
+}
+
+.btnCancel {
+    @extend .btnBase;
+    background-color: transparent;
+    color: $text-muted;
+
+    &:hover {
+        color: $text-light;
+    }
+}
+
+.contentArea {
+    min-height: 20rem;
+    display: flex;
+}
+
+.content {
+    color: $text-muted;
+    line-height: 1.6;
+    font-size: 1.05rem;
+    white-space: pre-wrap;
+    width: 100%;
+}
+
+.contentTextarea {
+    width: 100%;
+    min-height: 20rem;
+    background-color: $bg-dark;
+    border: 1px solid $border-dark;
+    border-radius: 0.5rem;
+    padding: 1rem;
+    color: $text-light;
+    font-size: 1.05rem;
+    line-height: 1.6;
+    resize: vertical;
+    outline: none;
+    font-family: inherit;
+
+    &:focus {
+        border-color: #334155;
+    }
+}
