@@ -10,7 +10,7 @@ COPY apps/database/prisma.config.ts ./
 
 RUN npm install
 
-RUN npx prisma generate --schema=./apps/database/schema.prisma
+RUN DATABASE_URL="postgresql://dummy:dummy@localhost:5432/dummy" npx prisma generate --schema=./apps/database/schema.prisma
 
 RUN npm run build --workspace=backend
 
